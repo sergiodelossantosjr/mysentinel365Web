@@ -1,0 +1,129 @@
+﻿
+<script type="text/javascript" src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="~/Scripts/jquery.jqplot.js"></script>
+<script type="text/javascript" src="~/Scripts/plugins/jqplot.highlighter.js"></script>
+<script type="text/javascript" src="~/Scripts/plugins/jqplot.cursor.js"></script>
+<script type="text/javascript" src="~/Scripts/plugins/jqplot.dateAxisRenderer.js"></script>
+<script type="text/javascript" src="~/Scripts/plugins/jqplot.canvasTextRenderer.js"></script>
+<script type="text/javascript" src="~/Scripts/plugins/jqplot.canvasAxisLabelRenderer.js"></script>
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/jquery.jqplot.css" />
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        ////var plot1 = $.jqplot('chart1', [[3, 7, 9, 1, 5, 3, 8, 2, 5]]);
+        ////var plot1 = $.jqplot('chart1', [[55.00, 50.00, 55.00, 52.00, 55.00, 55.00, 53.00, 55.00, 55.00]]);
+
+        //ajax call
+        var arr = [];
+        var uri = 'http://cpe05api.gear.host/api/humidity';
+        // Send an AJAX request
+        $.getJSON(uri)
+            .done(function(data) {
+                // ON SUCCESS, 'data' contains a list of humidity.
+                $.each(data, function(key, item) {
+                    arr.push([key, parseFloat(item.humidity)]);
+                });
+
+                if (arr.length > 0) {
+                    DisplayHumidity(arr);
+                }
+            });
+
+
+        var arr1 = [];
+        var uri1 = 'http://cpe05api.gear.host/api/celcius';
+        // Send an AJAX request
+        $.getJSON(uri1)
+            .done(function(data) {
+                // ON SUCCESS, 'data' contains a list of celcius.
+                $.each(data, function(key, item) {
+                    arr1.push([key, parseFloat(item.temperature_celcius)]);
+                });
+
+                if (arr1.length > 0) {
+                    DisplayCelcius(arr1);
+                }
+            });
+
+
+        var arr2 = [];
+        var uri2 = 'http://cpe05api.gear.host/api/fahrenheit';
+        // Send an AJAX request
+        $.getJSON(uri2)
+            .done(function(data) {
+                // ON SUCCESS, 'data' contains a list of fahrenheit.
+                $.each(data, function(key, item) {
+                    arr2.push([key, parseFloat(item.temperature_fahrenheit)]);
+                });
+
+                if (arr2.length > 0) {
+                    DisplayFahrenheit(arr2);
+                }
+            });
+
+    });
+
+    function DisplayHumidity(data) {
+        var humidityplot = $.jqplot('humidity', [data],
+        {
+            axes: {
+                xaxis: { min: 0, tickInterval: 1 }, yaxis: { min: 0, tickOptions: { formatString: '%#d%' } }
+            },
+            highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+            },
+            cursor: {
+                show: false
+            }
+        });
+    }
+
+    function DisplayCelcius(data) {
+        var celciusplot = $.jqplot('celcius', [data],
+        {
+            axes: {
+                xaxis: { min: 0, tickInterval: 1 }, yaxis: { min: 0, tickOptions: { formatString: '%#d°C' } }                
+            },
+            highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+            },
+            cursor: {
+                show: false
+            }
+        });
+    }
+
+    function DisplayFahrenheit(data) {
+        var fahrenheitplot = $.jqplot('fahrenheit', [data],
+        {
+            axes: {
+                xaxis: { min: 0, tickInterval: 1 }, yaxis: { min: 0, tickOptions: { formatString: '%#d°F' } } 
+            },
+            highlighter: {
+                show: true,
+                sizeAdjust: 7.5
+            },
+            cursor: {
+                show: false
+            }
+        });
+    }
+
+</script>
+<div class="jumbotron">
+    <h1>Room Temperature and Humidity Monitoring</h1>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <h2>Humidity</h2>
+        <div id="humidity" style="height: 300px; width: 500px; position: relative;" class="jqplot-target"></div>
+        <h2>Temperature (°C)</h2>
+        <div id="celcius" style="height: 300px; width: 500px; position: relative;" class="jqplot-target"></div>
+        <h2>Temperature (°F)</h2>
+        <div id="fahrenheit" style="height: 300px; width: 500px; position: relative;" class="jqplot-target"></div>
+    </div>
+</div>
